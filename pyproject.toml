@@ -1,0 +1,28 @@
+[project]
+name = "rubato"
+version = "0.1.0"
+description = "Anonymous code release accompanying paper submission"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "accelerate>=1.12.0",
+    "coloredlogs>=15.0.1",
+    "einops>=0.8.0",
+    "fast-hadamard-transform",
+    "matplotlib>=3.10.8",
+    "numpy>=2.0",
+    "pyyaml>=6.0",
+    "requests>=2.32",
+    "scikit-learn>=1.8.0",
+    "scipy>=1.13",
+    "torch>=2.10.0,<2.11",
+    "tqdm>=4.67.1",
+]
+
+[tool.uv.workspace]
+members = [
+    "fast-hadamard-transform",
+]
+
+[tool.uv.sources]
+fast-hadamard-transform = { workspace = true }

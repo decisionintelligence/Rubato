@@ -1,0 +1,25 @@
+# Python build / cache
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+
+# CUDA extension build artifacts
+*.so
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Runtime artifacts
+logs/
+wandb/
+
+# Large binary assets — distributed separately via assets archive
+*.bin
+*.pkl
+*.npy
+*.safetensors

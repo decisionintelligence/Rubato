@@ -1,0 +1,254 @@
+from dataclasses import dataclass, field
+from typing import Any, Optional
+
+
+@dataclass
+class ExpConfigs:
+    '''
+    dataclass for argparse typo check, making life easier
+
+    Make sure to update this dataclass after adding new args in argparse
+    '''
+    @classmethod
+    def get_sweep_values(cls, attr_name: str) -> Optional[list]:
+        for field_info in cls.__dataclass_fields__.values():
+            if field_info.name == attr_name:
+                return field_info.metadata.get('sweep')
+        return None
+
+    # basic config
+    checkpoints: str
+    is_training: int
+    model_id: str
+    model_name: str
+    task_name: str
+
+    # dataset & data loader
+    augmentation_ratio: int
+    collate_fn: str | None
+    dataset_file_name: str | None
+    dataset_id: str
+    dataset_name: str
+    dataset_root_path: str
+    dataset_subset_name: str | None
+    embed: str
+    features: str
+    freq: str
+    missing_rate: float
+    target_variable_index: int
+    target_variable_name: str
+    train_val_loader_drop_last: int
+    train_val_loader_shuffle: int
+
+    # forecasting task
+    label_len: int
+    pred_len: int
+    seq_len: int
+
+    # classification task
+    n_classes: int
+
+    # GPU
+    allow_tf32: int
+    gpu_id: int
+    gpu_ids: str | None
+    use_gpu: int
+    use_multi_gpu: int
+
+    # training
+    batch_size: int
+    seed: int
+    itr: int
+    learning_rate: float
+    weight_decay: float
+    optimizer: str
+    loss: str
+    lr_scheduler: str
+    lr_scheduler_gamma: float
+    delayed_step_decay_delay: int
+    delayed_step_decay_gamma: float
+    n_train_stages: str
+    num_workers: int
+    patience: int
+    pretrained_checkpoint_file_name: str | None
+    pretrained_checkpoint_root_path: str | None
+    retain_graph: int
+    sweep: int
+    train_epochs: int
+    val_interval: int
+    wandb: int
+
+    # testing
+    checkpoints_test: str | None
+    load_checkpoints_test: int
+    save_arrays: int
+    save_cache_arrays: int
+    test_all: int
+    test_dataset_statistics: int
+    test_flop: int
+    test_gpu_memory: int
+    test_train_time: int
+
+    # model configs
+    # common
+    activation: str
+    c_out: int
+    channel_independence: int
+    d_ff: int = field(metadata={"sweep": [16, 32, 64, 128, 256, 512, 2048]})
+    d_layers: int = field(metadata={"sweep": [1, 2]})
+    d_model: int = field(metadata={"sweep": [16, 32, 64, 128, 256, 512]})
+    d_timesteps: int
+    dec_in: int
+    dropout: float = field(metadata={"sweep": [0.0, 0.1, 0.3, 0.4, 0.5]})
+    e_layers: int = field(metadata={"sweep": [1, 2, 3, 4, 8]})
+    embed_type: int
+    enc_in: int
+    factor: int
+    output_attention: int
+    hidden_layers: int
+    individual: int
+    kernel_size: int = field(metadata={"sweep": [2, 3, 4, 5]})
+    moving_avg: int
+    n_heads: int = field(metadata={"sweep": [1, 4, 8]})
+    n_layers: int = field(metadata={"sweep": [1, 2, 3, 4]})
+    n_patches_list: list[int]
+    node_dim: int
+    patch_len: int
+    patch_stride: int
+    revin: int
+    revin_affine: int
+    scale_factor: int
+    top_k: int = field(metadata={"sweep": [3, 5]})
+    # CRU
+    cru_bandwidth: int
+    cru_num_basis: int
+    cru_ts: float = field(metadata={"sweep": [0.2, 0.3]})
+    # Informer
+    informer_distil: int
+    # Latent ODE
+    latent_ode_classif: int
+    latent_ode_gen_layers: int = field(metadata={"sweep": [2, 3]})
+    latent_ode_gru_units: int = field(metadata={"sweep": [50, 100]})
+    latent_ode_linear_classif: int
+    latent_ode_rec_dims: int = field(metadata={"sweep": [30, 40, 100]})
+    latent_ode_rec_layers: int = field(metadata={"sweep": [2, 3, 4]})
+    latent_ode_units: int = field(metadata={"sweep": [50, 300, 500]})
+    latent_ode_z0_encoder: str
+    # Mamba
+    mamba_d_conv: int
+    mamba_expand: int
+    # mTAN
+    mtan_alpha: float = field(metadata={"sweep": [5., 100.]})
+    mtan_num_ref_points: int = field(metadata={"sweep": [8, 16, 32, 64, 128]})
+    # NeuralFlows
+    neuralflows_flow_layers: int = field(metadata={"sweep": [1, 2, 4, 16]})
+    neuralflows_flow_model: str
+    neuralflows_latents: int = field(metadata={"sweep": [15, 20]})
+    neuralflows_time_hidden_dim: int
+    neuralflows_time_net: str
+    # Nonstationary Transformer
+    nonstationarytransformer_p_hidden_dims: list = field(metadata={"sweep": [[8, 8], [16, 16], [32, 32], [64, 64], [128, 128], [256, 256]]})
+    nonstationarytransformer_p_hidden_layers: int = field(metadata={"sweep": [2, 4]})
+    # PatchTST
+    patchtst_decomposition: int
+    patchtst_fc_dropout: float
+    patchtst_head_dropout: float
+    patchtst_padding_patch: str
+    patchtst_subtract_last: int
+    # PrimeNet
+    primenet_pooling: str
+    # TimeMixer
+    timemixer_decomp_method: str
+    timemixer_down_sampling_layers: int = field(metadata={"sweep": [1, 3]})
+    timemixer_down_sampling_method: str
+    timemixer_use_norm: int
+    # tPatchGNN
+    tpatchgnn_te_dim: int
+    # KAFNet
+    kafnet_K: int = 4
+    kafnet_te_dim: int = 10
+    kafnet_preconvdim: int = 32
+    # ASTGI
+    astgi_channel_dim: int = 8
+    astgi_time_dim: int = 16
+    astgi_prop_layers: int = 2
+    astgi_k_neighbors: int = 16
+    astgi_mlp_ratio: float = 2.0
+    astgi_channel_dist_weight: float = 1.0
+
+    # Rubato (CosineSignatureAttention)
+    rubato_M: int = field(default=2, metadata={"sweep": [1, 2, 3, 4]})
+    rubato_sigma_init: float = field(default=0.5, metadata={"sweep": [0.3, 0.5, 0.7, 1.0]})
+    rubato_rff_dim: int = field(default=0, metadata={"sweep": [0, 64, 96, 128, 192]})
+    rubato_final_feature_dim_per_level: int = field(default=0, metadata={"sweep": [0, 16, 32, 64, 96]})
+    rubato_te_dim: int = field(default=16, metadata={"sweep": [8, 16, 32]})
+    rubato_cross_channel_layers: int = field(default=0, metadata={"sweep": [0, 1, 2]})
+    rubato_global_obs_layers: int = field(default=0, metadata={"sweep": [0, 1, 2]})
+    rubato_obs_preproc_layers: int = field(default=0, metadata={"sweep": [0, 1, 2]})
+    rubato_use_sig_decoder: int = field(default=1, metadata={"sweep": [0, 1]})
+    rubato_sig_gate_init: float = field(default=0.1, metadata={"sweep": [0.0, 0.01, 0.1, 0.5]})
+    rubato_tta_steps: int = field(default=0, metadata={"sweep": [0, 1, 3, 5]})
+    rubato_tta_lr: float = field(default=0.01, metadata={"sweep": [0.001, 0.005, 0.01, 0.05]})
+    rubato_sorf_seed: int = field(default=42, metadata={"sweep": [0, 7, 42, 2026]})
+    rubato_num_patches: int = field(default=16, metadata={"sweep": [4, 8, 16, 32, 64]})
+    rubato_decoder_topk: int = field(default=0, metadata={"sweep": [0, 8, 16, 32, 64]})
+    max_grad_norm: float = field(default=0.0)
+
+    # StandardIrregularCSV loader options (for alignment with t-PatchGNN)
+    split_strategy: str = "time"  # "time" (global cutoff) or "sample" (by record_id, t-PatchGNN style)
+    single_chunk_on_sample: int = 0  # 1: one chunk per record (t-PatchGNN P12/MIMIC style); 0: sliding window
+    normalize_method: str = "zscore"  # "zscore" or "minmax"
+
+    # Used to be compatible with ipython. Never used
+    f: int = 1
+
+    # args not presented in argparse
+    seq_len_max_irr: int | None = None # maximum number of observations along time dimension of x, set in irregular time series datasets
+    pred_len_max_irr: int | None = None # maximum number of observations along time dimension of y, set in irregular time series datasets
+    patch_len_max_irr: int | None = None # maximum number of observations along time dimension in a patch of x, set in irregular time series datasets
+    subfolder_train: str = "" # timestamp of training in format %Y_%m%d_%H%M
+    itr_i: int = 0 # current training iteration. [0, itr-1]
+    # CosineSignature Attention Configs
+
+class ExpConfigsTracker:
+    """Wrapper that tracks which ExpConfigs attributes are accessed"""
+    
+    def __init__(self, configs: ExpConfigs):
+        object.__setattr__(self, '_config', configs)
+        object.__setattr__(self, '_accessed_attrs', set())
+    
+    def __getattr__(self, name: str) -> Any:
+        if hasattr(self._config, name):
+            self._accessed_attrs.add(name)
+            return getattr(self._config, name)
+        raise AttributeError(f"'{type(self._config).__name__}' object has no attribute '{name}'")
+    
+    def __setattr__(self, name: str, value: Any) -> None:
+        if name.startswith('_'):
+            object.__setattr__(self, name, value)
+        else:
+            self._accessed_attrs.add(name)
+            setattr(self._config, name, value)
+    
+    def get_accessed_attributes(self) -> set[str]:
+        """Return set of accessed attribute names"""
+        return self._accessed_attrs.copy()
+    
+    def get_unused_attributes(self) -> set[str]:
+        """Return set of unused attribute names"""
+        all_attrs = {field.name for field in self._config.__dataclass_fields__.values()}
+        return all_attrs - self._accessed_attrs
+    
+    def print_access_report(self):
+        """Print a report of accessed vs unused attributes"""
+        accessed = self.get_accessed_attributes()
+        unused = self.get_unused_attributes()
+        
+        print("=== ExpConfigs Access Report ===")
+        print(f"Accessed attributes ({len(accessed)}):")
+        for attr in sorted(accessed):
+            print(f"  ✓ {attr}")
+
+    @property
+    def __dict__(self):
+        return self._config.__dict__
